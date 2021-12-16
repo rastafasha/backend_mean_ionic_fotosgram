@@ -4,15 +4,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const server_1 = __importDefault(require("./classes/server"));
-const usuario_1 = __importDefault(require("./routes/usuario"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_1 = __importDefault(require("express"));
+const usuario_1 = __importDefault(require("./routes/usuario"));
+const post_1 = __importDefault(require("./routes/post"));
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const server = new server_1.default();
 //middleware body parser
 server.app.use(express_1.default.urlencoded({ extended: true }));
 server.app.use(express_1.default.json());
+//file upload
+server.app.use((0, express_fileupload_1.default)({ userTempfiles: true }));
 // Rutas de mi app
 server.app.use('/user', usuario_1.default);
+server.app.use('/posts', post_1.default);
 //conectar db
 mongoose_1.default.connect('mongodb://localhost:27017/fotosgram', (err) => {
     if (err)

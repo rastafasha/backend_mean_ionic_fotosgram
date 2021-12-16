@@ -21,7 +21,7 @@ const usuarioSchema = new Schema({
     }
 });
 
-usuarioSchema.method('compararPassword', function( password: string = ''): boolean{
+usuarioSchema.method('compararPassword', function( this: any, password: string = ''): boolean{
 
     if(bcrypt.compareSync(password, this.password)) {
         return true;

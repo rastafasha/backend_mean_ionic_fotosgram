@@ -9,13 +9,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const token_1 = __importDefault(require("../classes/token"));
 const autenticacion_1 = require("../middlewares/autenticacion");
 const userRoutes = (0, express_1.Router)();
-/*userRoutes.get('/prueba', (req:Request, res: Response)=>{
-    res.json({
-        ok:true,
-        mensaje: 'Todo funciona bien!'
-    })
-});*/
-//login
+// Login
 userRoutes.post('/login', (req, res) => {
     const body = req.body;
     usuario_model_1.Usuario.findOne({ email: body.email }, (err, userDB) => {
@@ -32,7 +26,7 @@ userRoutes.post('/login', (req, res) => {
                 _id: userDB._id,
                 nombre: userDB.nombre,
                 email: userDB.email,
-                avatar: userDB.avatar,
+                avatar: userDB.avatar
             });
             res.json({
                 ok: true,
@@ -47,7 +41,7 @@ userRoutes.post('/login', (req, res) => {
         }
     });
 });
-//crear o registro de usuario
+// Crear un usuario
 userRoutes.post('/create', (req, res) => {
     const user = {
         nombre: req.body.nombre,
@@ -60,7 +54,7 @@ userRoutes.post('/create', (req, res) => {
             _id: userDB._id,
             nombre: userDB.nombre,
             email: userDB.email,
-            avatar: userDB.avatar,
+            avatar: userDB.avatar
         });
         res.json({
             ok: true,
@@ -73,12 +67,12 @@ userRoutes.post('/create', (req, res) => {
         });
     });
 });
-//actualizar usuario
-userRoutes.put('/update', autenticacion_1.verificaToken, (req, res) => {
+// Actualizar usuario
+userRoutes.post('/update', autenticacion_1.verificaToken, (req, res) => {
     const user = {
         nombre: req.body.nombre || req.usuario.nombre,
         email: req.body.email || req.usuario.email,
-        avatar: req.body.avatar || req.usuario.avatar,
+        avatar: req.body.avatar || req.usuario.avatar
     };
     usuario_model_1.Usuario.findByIdAndUpdate(req.usuario._id, user, { new: true }, (err, userDB) => {
         if (err)
@@ -86,19 +80,26 @@ userRoutes.put('/update', autenticacion_1.verificaToken, (req, res) => {
         if (!userDB) {
             return res.json({
                 ok: false,
-                mensaje: 'No existe un usuario con ese id'
+                mensaje: 'No existe un usuario con ese ID'
             });
         }
         const tokenUser = token_1.default.getJwtToken({
             _id: userDB._id,
             nombre: userDB.nombre,
             email: userDB.email,
-            avatar: userDB.avatar,
+            avatar: userDB.avatar
         });
         res.json({
             ok: true,
             token: tokenUser
         });
+    });
+});
+userRoutes.get('/', [autenticacion_1.verificaToken], (req, res) => {
+    const usuario = req.usuario;
+    res.json({
+        ok: true,
+        usuario
     });
 });
 exports.default = userRoutes;
