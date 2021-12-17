@@ -9,12 +9,18 @@ const express_1 = __importDefault(require("express"));
 const usuario_1 = __importDefault(require("./routes/usuario"));
 const post_1 = __importDefault(require("./routes/post"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
+const cors_1 = __importDefault(require("cors"));
 const server = new server_1.default();
 //middleware body parser
 server.app.use(express_1.default.urlencoded({ extended: true }));
 server.app.use(express_1.default.json());
 //file upload
 server.app.use((0, express_fileupload_1.default)({ userTempfiles: true }));
+//cors
+server.app.use((0, cors_1.default)({
+    origin: true,
+    credentials: true
+}));
 // Rutas de mi app
 server.app.use('/user', usuario_1.default);
 server.app.use('/posts', post_1.default);
